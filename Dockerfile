@@ -1,9 +1,9 @@
 ARG PORT=39715
 ARG PROXY_CONTENT=TRUE
-ARG SOCKS5
+ARG SOCKS5=socks://ycl84:lam78ycl@192.168.1.19:6535
 
 # Only set for local/direct access. When TLS is used, the API_URL is assumed to be the same as the frontend.
-ARG API_URL
+ARG API_URL=http://192.168.1.19:39715
 
 # It uses a reverse proxy to serve the frontend statically and proxy to backend
 # from a single exposed port, expecting TLS termination to be handled at the
@@ -29,7 +29,7 @@ COPY . .
 
 ARG PORT API_URL PROXY_CONTENT SOCKS5
 # Download other npm dependencies and compile frontend
-RUN REFLEX_API_URL=${API_URL=http://helios64.local:39715} reflex export --loglevel debug --frontend-only --no-zip && mv .web/build/client/* /srv/ && rm -rf .web
+RUN REFLEX_API_URL=http://192.168.1.19:39715 reflex export --loglevel debug --frontend-only --no-zip && mv .web/build/client/* /srv/ && rm -rf .web
 
 
 # Final image with only necessary files
@@ -39,7 +39,7 @@ FROM python:3.13-slim
 RUN apt-get update -y && apt-get install -y caddy redis-server && rm -rf /var/lib/apt/lists/*
 
 ARG PORT API_URL
-ENV PATH="/app/.venv/bin:$PATH" PORT=39715 REFLEX_API_URL=http://helios64.local:39715 REDIS_URL=redis://helios64.local:39715 PYTHONUNBUFFERED=1 PROXY_CONTENT=TRUE SOCKS5=""}
+ENV PATH="/app/.venv/bin:$PATH" PORT=39715 REFLEX_API_URL=http://192.168.1.19:39715 REDIS_URL=redis://192.168.1.19 PYTHONUNBUFFERED=1 PROXY_CONTENT=TRUE SOCKS5=socks://ycl84:lam78ycl@192.168.1.19:6535
 
 WORKDIR /app
 COPY --from=builder /app /app
