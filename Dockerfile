@@ -1,6 +1,6 @@
 ARG PORT=39715
 ARG PROXY_CONTENT=TRUE
-ARG SOCKS5=socks://ycl84:lam78ycl@192.168.1.19:6535
+ARG SOCKS5
 
 # Only set for local/direct access. When TLS is used, the API_URL is assumed to be the same as the frontend.
 ARG API_URL=http://192.168.1.19:39715
@@ -39,7 +39,7 @@ FROM python:3.13-slim
 RUN apt-get update -y && apt-get install -y caddy redis-server && rm -rf /var/lib/apt/lists/*
 
 ARG PORT API_URL
-ENV PATH="/app/.venv/bin:$PATH" PORT=39715 REFLEX_API_URL=http://192.168.1.19:39715 REDIS_URL=redis://192.168.1.19 PYTHONUNBUFFERED=1 PROXY_CONTENT=TRUE SOCKS5=socks://ycl84:lam78ycl@192.168.1.19:6535
+ENV PATH="/app/.venv/bin:$PATH" PORT=39715 REFLEX_API_URL=http://192.168.1.19:39715 REDIS_URL=redis://localhost PYTHONUNBUFFERED=1 PROXY_CONTENT=TRUE SOCKS5=${SOCKS5:-""}
 
 WORKDIR /app
 COPY --from=builder /app /app
